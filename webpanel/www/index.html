@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MTProxyMax — Web Panel</title>
+<link rel="stylesheet" href="static/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+</head>
+<body>
+<div id="app">
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <span class="logo-icon">⚡</span>
+        <span class="logo-text">MTProxyMax</span>
+      </div>
+      <span class="logo-version">v1.4.0</span>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="#" class="nav-item active" data-page="dashboard">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        <span>Dashboard</span>
+      </a>
+      <a href="#" class="nav-item" data-page="secrets">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+        <span>Secrets</span>
+      </a>
+      <a href="#" class="nav-item" data-page="traffic">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        <span>Traffic</span>
+      </a>
+      <a href="#" class="nav-item" data-page="proxy">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+        <span>Proxy Control</span>
+      </a>
+      <a href="#" class="nav-item" data-page="upstreams">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        <span>Upstreams</span>
+      </a>
+      <a href="#" class="nav-item" data-page="settings">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+        <span>Settings</span>
+      </a>
+      <a href="#" class="nav-item" data-page="logs">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        <span>Logs</span>
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="server-info" id="sidebar-server-info">—</div>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Top Bar -->
+    <header class="topbar">
+      <button class="menu-toggle" id="menuToggle">☰</button>
+      <div class="topbar-title" id="pageTitle">Dashboard</div>
+      <div class="topbar-actions">
+        <span class="status-badge" id="statusBadge">—</span>
+        <button class="btn btn-sm" onclick="refreshAll()" title="Refresh">↻</button>
+      </div>
+    </header>
+
+    <!-- Pages -->
+    <div class="page-container">
+      <!-- Dashboard Page -->
+      <div class="page active" id="page-dashboard">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">Status</div>
+            <div class="stat-value" id="dash-status">—</div>
+            <div class="stat-sub" id="dash-uptime">—</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Traffic In</div>
+            <div class="stat-value accent-cyan" id="dash-traffic-in">—</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Traffic Out</div>
+            <div class="stat-value accent-green" id="dash-traffic-out">—</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Connections</div>
+            <div class="stat-value accent-yellow" id="dash-connections">—</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Active Secrets</div>
+            <div class="stat-value accent-purple" id="dash-secrets">—</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">CPU Usage</div>
+            <div class="stat-value" id="dash-cpu">—</div>
+            <div class="progress-bar"><div class="progress-fill" id="dash-cpu-bar"></div></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">RAM Usage</div>
+            <div class="stat-value" id="dash-ram">—</div>
+            <div class="progress-bar"><div class="progress-fill" id="dash-ram-bar"></div></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Disk Usage</div>
+            <div class="stat-value" id="dash-disk">—</div>
+            <div class="progress-bar"><div class="progress-fill" id="dash-disk-bar"></div></div>
+          </div>
+        </div>
+        <div class="card mt-4">
+          <div class="card-header">
+            <h3>Server Information</h3>
+          </div>
+          <div class="card-body">
+            <div class="info-grid">
+              <div class="info-item"><span class="info-label">Port</span><span class="info-value" id="dash-port">—</span></div>
+              <div class="info-item"><span class="info-label">Domain</span><span class="info-value" id="dash-domain">—</span></div>
+              <div class="info-item"><span class="info-label">Engine</span><span class="info-value" id="dash-engine">—</span></div>
+              <div class="info-item"><span class="info-label">Concurrency</span><span class="info-value" id="dash-concurrency">—</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="card mt-4">
+          <div class="card-header"><h3>Quick Actions</h3></div>
+          <div class="card-body">
+            <div class="action-buttons">
+              <button class="btn btn-success" onclick="proxyAction('start')">▶ Start</button>
+              <button class="btn btn-danger" onclick="proxyAction('stop')">■ Stop</button>
+              <button class="btn btn-warning" onclick="proxyAction('restart')">↻ Restart</button>
+              <button class="btn btn-info" onclick="runAction('doctor')">🩺 Doctor</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Secrets Page -->
+      <div class="page" id="page-secrets">
+        <div class="card">
+          <div class="card-header">
+            <h3>Secret Management</h3>
+            <button class="btn btn-primary" onclick="showAddSecret()">+ Add Secret</button>
+          </div>
+          <div class="card-body">
+            <div id="add-secret-form" class="form-inline hidden">
+              <input type="text" class="input" id="new-secret-label" placeholder="Label (e.g. alice)">
+              <button class="btn btn-primary" onclick="addSecret()">Create</button>
+              <button class="btn btn-ghost" onclick="hideAddSecret()">Cancel</button>
+            </div>
+            <div class="table-wrapper">
+              <table class="table" id="secrets-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Label</th>
+                    <th>Status</th>
+                    <th>Connections</th>
+                    <th>Max IPs</th>
+                    <th>Quota</th>
+                    <th>Expires</th>
+                    <th>Traffic In</th>
+                    <th>Traffic Out</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="secrets-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Traffic Page -->
+      <div class="page" id="page-traffic">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">Total Traffic In</div>
+            <div class="stat-value accent-cyan" id="traffic-total-in">—</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Total Traffic Out</div>
+            <div class="stat-value accent-green" id="traffic-total-out">—</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Active Connections</div>
+            <div class="stat-value accent-yellow" id="traffic-active-conns">—</div>
+          </div>
+        </div>
+        <div class="card mt-4">
+          <div class="card-header"><h3>Per-User Traffic</h3></div>
+          <div class="card-body">
+            <div class="table-wrapper">
+              <table class="table" id="traffic-table">
+                <thead>
+                  <tr><th>Label</th><th>Status</th><th>Traffic In</th><th>Traffic Out</th><th>Total</th><th>Bar</th></tr>
+                </thead>
+                <tbody id="traffic-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Proxy Control Page -->
+      <div class="page" id="page-proxy">
+        <div class="stats-grid cols-2">
+          <div class="stat-card">
+            <div class="stat-label">Proxy Status</div>
+            <div class="stat-value" id="proxy-status-display">—</div>
+            <div class="mt-3">
+              <div class="action-buttons">
+                <button class="btn btn-success btn-lg" onclick="proxyAction('start')">▶ Start</button>
+                <button class="btn btn-danger btn-lg" onclick="proxyAction('stop')">■ Stop</button>
+                <button class="btn btn-warning btn-lg" onclick="proxyAction('restart')">↻ Restart</button>
+              </div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Diagnostic Actions</div>
+            <div class="mt-3">
+              <div class="action-buttons">
+                <button class="btn btn-info" onclick="runAction('doctor')">🩺 Doctor</button>
+                <button class="btn btn-info" onclick="runAction('health_check')">❤ Health Check</button>
+                <button class="btn btn-info" onclick="runAction('dpi-inspect')">🛡 DPI Inspect</button>
+                <button class="btn btn-info" onclick="runAction('net-grade')">📊 Net Grade</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card mt-4">
+          <div class="card-header"><h3>Security & Shields</h3></div>
+          <div class="card-body">
+            <div class="action-buttons">
+              <button class="btn btn-warning" onclick="runAction('bbr on')">BBR On</button>
+              <button class="btn btn-warning" onclick="runAction('shield on')">Shield On</button>
+              <button class="btn btn-warning" onclick="runAction('syn-shield on')">SYN Shield On</button>
+              <button class="btn btn-warning" onclick="runAction('cover-shield on')">Cover Shield On</button>
+              <button class="btn btn-warning" onclick="runAction('tcp-fastpath on')">TCP FastPath</button>
+              <button class="btn btn-warning" onclick="runAction('lockdown on')">🔒 Lockdown</button>
+              <button class="btn btn-warning" onclick="runAction('maintenance on')">🔧 Maintenance</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Upstreams Page -->
+      <div class="page" id="page-upstreams">
+        <div class="card">
+          <div class="card-header">
+            <h3>Proxy Chaining / Upstreams</h3>
+            <button class="btn btn-primary" onclick="showAddUpstream()">+ Add Upstream</button>
+          </div>
+          <div class="card-body">
+            <div id="add-upstream-form" class="form-row hidden">
+              <input type="text" class="input" id="up-name" placeholder="Label">
+              <select class="input" id="up-type">
+                <option value="direct">Direct</option>
+                <option value="socks5">SOCKS5</option>
+                <option value="socks4">SOCKS4</option>
+              </select>
+              <input type="text" class="input" id="up-addr" placeholder="host:port">
+              <input type="text" class="input" id="up-user" placeholder="user (optional)">
+              <input type="text" class="input" id="up-pass" placeholder="pass (optional)">
+              <input type="text" class="input" id="up-weight" placeholder="weight" value="10">
+              <button class="btn btn-primary" onclick="addUpstream()">Create</button>
+              <button class="btn btn-ghost" onclick="hideAddUpstream()">Cancel</button>
+            </div>
+            <div class="table-wrapper">
+              <table class="table">
+                <thead>
+                  <tr><th>Name</th><th>Type</th><th>Address</th><th>Weight</th><th>Enabled</th><th>Actions</th></tr>
+                </thead>
+                <tbody id="upstreams-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Settings Page -->
+      <div class="page" id="page-settings">
+        <div class="card">
+          <div class="card-header"><h3>Proxy Settings</h3></div>
+          <div class="card-body">
+            <form id="settings-form" class="settings-form" onsubmit="saveSettings(event)">
+              <div class="form-group">
+                <label>Proxy Port</label>
+                <input type="text" class="input" id="set-port">
+              </div>
+              <div class="form-group">
+                <label>Domain (SNI)</label>
+                <input type="text" class="input" id="set-domain">
+              </div>
+              <div class="form-group">
+                <label>Concurrency</label>
+                <input type="text" class="input" id="set-concurrency">
+              </div>
+              <div class="form-group">
+                <label>Client MSS</label>
+                <input type="text" class="input" id="set-mss">
+              </div>
+              <div class="form-group">
+                <label>Metrics Port</label>
+                <input type="text" class="input" id="set-metrics-port">
+              </div>
+              <div class="form-group">
+                <label>Ad-Tag (from @MTProxyBot)</label>
+                <input type="text" class="input" id="set-adtag" placeholder="32 hex chars">
+              </div>
+              <div class="form-group">
+                <label>Fake Cert Length</label>
+                <input type="text" class="input" id="set-cert-len">
+              </div>
+              <div class="form-group">
+                <label>Masking Host</label>
+                <input type="text" class="input" id="set-mask-host">
+              </div>
+              <div class="form-group">
+                <label>Masking Port</label>
+                <input type="text" class="input" id="set-mask-port">
+              </div>
+              <div class="form-group">
+                <label>Unknown SNI Action</label>
+                <select class="input" id="set-sni-action">
+                  <option value="mask">Mask</option>
+                  <option value="drop">Drop</option>
+                </select>
+              </div>
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Save Settings</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Logs Page -->
+      <div class="page" id="page-logs">
+        <div class="card">
+          <div class="card-header">
+            <h3>Container Logs</h3>
+            <button class="btn btn-sm" onclick="loadLogs()">↻ Refresh</button>
+          </div>
+          <div class="card-body">
+            <pre class="log-output" id="log-output">Loading...</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay hidden" id="modalOverlay" onclick="closeModal()">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <h3 id="modalTitle">Action Result</h3>
+      <button class="btn btn-ghost btn-sm" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" onclick="closeModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Secret Link Modal -->
+<div class="modal-overlay hidden" id="linkModalOverlay" onclick="closeLinkModal()">
+  <div class="modal modal-lg" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <h3 id="linkModalTitle">Proxy Link</h3>
+      <button class="btn btn-ghost btn-sm" onclick="closeLinkModal()">✕</button>
+    </div>
+    <div class="modal-body" id="linkModalBody"></div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" onclick="closeLinkModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Limits Modal -->
+<div class="modal-overlay hidden" id="limitsModalOverlay" onclick="closeLimitsModal()">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Edit User Limits</h3>
+      <button class="btn btn-ghost btn-sm" onclick="closeLimitsModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="limits-label">
+      <div class="form-group">
+        <label>Max Connections (0=unlimited)</label>
+        <input type="text" class="input" id="limits-conns" placeholder="0">
+      </div>
+      <div class="form-group">
+        <label>Max IPs (0=unlimited)</label>
+        <input type="text" class="input" id="limits-ips" placeholder="0">
+      </div>
+      <div class="form-group">
+        <label>Data Quota (e.g. 10G, 500M, 0=unlimited)</label>
+        <input type="text" class="input" id="limits-quota" placeholder="0">
+      </div>
+      <div class="form-group">
+        <label>Expiry Date (YYYY-MM-DD or 0=never)</label>
+        <input type="text" class="input" id="limits-expires" placeholder="0">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeLimitsModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveLimits()">Save</button>
+    </div>
+  </div>
+</div>
+
+<script src="static/app.js"></script>
+</body>
+</html>
